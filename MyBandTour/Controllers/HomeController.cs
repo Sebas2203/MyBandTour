@@ -8,22 +8,13 @@ namespace MyBandTour.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult HomePage()
         {
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult AdminLogin()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }
