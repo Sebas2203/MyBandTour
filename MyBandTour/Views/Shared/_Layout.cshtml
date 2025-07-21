@@ -8,23 +8,40 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="~/Content/css/Styles.css" rel="stylesheet" />
+    <link href="~/Content/css/navbar.css" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
+    @* Navbar personalizada con ActionLinks en <a> *@
+    <nav class="navbar">
+        <div class="nav-left" style="color:white;">
             @Html.ActionLink("MyBandTour", "HomePage", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "HomePage", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Login", "AdminLogin", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
-            </div>
+            <input type="text" placeholder="Busca un concierto" class="search-box" />
+        </div>
+        <div class="nav-right">
+            @Html.ActionLink("Home", "HomePage", "Home", new { area = "" }, new { @class = "nav-link" })
+            @Html.ActionLink("Contact", "Support", "Home", new { area = "" }, new { @class = "nav-link" })
+            <div class="divider"></div>
+            @Html.ActionLink("Sign up", "Register", "Home", new { area = "" }, new { @class = "nav-link" })
+            <button class="login-btn">@Html.ActionLink("Log in", "AdminLogin", "Home", new { area = "" }, new { @class = "login-link" })</button>
         </div>
     </nav>
+
+    @*navbar default*@
+    @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+            <div class="container">
+                @Html.ActionLink("MyBandTour", "HomePage", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li>@Html.ActionLink("Home", "HomePage", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Login", "AdminLogin", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>*@
     <div class="container body-content">
         @RenderBody()
         <hr />
