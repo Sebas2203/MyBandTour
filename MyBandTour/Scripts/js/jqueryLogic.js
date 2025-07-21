@@ -1,18 +1,27 @@
 ﻿function Authenticate() {
-    //parametros de entrada
+    // Parámetros de entrada
     let user = document.getElementById("user").value;
     let password = document.getElementById("password").value;
-
 
     $.ajax({
         type: "POST",
         dataType: "json",
-        URL: "/Home/AuthenticateUser",
-        data: { parametro: valor },
-        success: function (response) {
+        url: "/Home/AuthenticateUser",  // ✅ corregido
+        data: {
+            'username': user,
+            'password': password
         },
-        Error: function (error) {
+        success: function (response) {
+            console.log(response);
+
+            if (response.Status === 200) {
+                window.location.replace('/Home/HomePage')
+            } else {
+                document.getElementById('lblMessage').innerHTML = 'Usuario o Contraseña incorrectos.'
+            }
+        },
+        error: function (error) {  // ✅ corregido
             console.log("Error: " + error);
         }
-    }
+    });
 }
