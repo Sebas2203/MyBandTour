@@ -15,7 +15,7 @@ namespace MyBandTour.Controllers
         }
         public ActionResult Logout()
         {
-            Session.Clear(); // Limpia todas las variables de sesión
+            Session.Abandon();
             return RedirectToAction("HomePage");
         }
 
