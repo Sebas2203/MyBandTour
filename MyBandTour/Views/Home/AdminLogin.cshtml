@@ -10,7 +10,7 @@
     <h2>Iniciar Sesión</h2>
 
     <div class="form-group">
-        <label for="email">Correo electrónico</label>
+        <label for="email">Usuario</label>
         <input type="email" id="user" placeholder="ejemplo@correo.com" />
     </div>
 
@@ -19,7 +19,11 @@
         <input type="password" id="password" placeholder="••••••••" />
     </div>
 
-    <button onclick="Authenticate()">Entrar</button>
+    <div class="form-group">
+        <label id="lblMessage"></label>
+    </div>
+
+    <button onclick="Authenticate();">Entrar</button>
 
     <p class="signup-text">¿No tienes una cuenta? <a href="#">Regístrate</a></p>
 </div>
