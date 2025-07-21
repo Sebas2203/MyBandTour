@@ -6,7 +6,7 @@
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "/Home/AuthenticateUser",  // ✅ corregido
+        url: "/Home/AuthenticateUser",
         data: {
             'username': user,
             'password': password
@@ -20,7 +20,7 @@
                 document.getElementById('lblMessage').innerHTML = 'Usuario o Contraseña incorrectos.'
             }
         },
-        error: function (error) {  // ✅ corregido
+        error: function (error) { 
             console.log("Error: " + error);
         }
     });
