@@ -7,31 +7,35 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="~/Content/css/Styles.css" rel="stylesheet" />
+    <script src="~/Scripts/js/jqueryLogic.js"></script>
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-left" style="color:white;">
-            @Html.ActionLink("MyBandTour", "HomePage", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <input type="text" placeholder="Busca un concierto" class="search-box" />
-        </div>
-        <div class="nav-right">
-            @Html.ActionLink("Home", "HomePage", "Home", new { area = "" }, new { @class = "nav-link" })
-            @Html.ActionLink("Contact", "Support", "Home", new { area = "" }, new { @class = "nav-link" })
-            <div class="divider"></div>
+        <div class="nav-container">
+            <div class="nav-left">
+                @RenderSection("SearchNav", required: false)
+            </div>
 
-            @* Mostrar nombre de usuario si está autenticado *@
-            @if (Session["Authenticate"] != null && (bool)Session["Authenticate"] == true && Session["Username"] != null)
-            {
-                <span class="nav-link username">@Session["Username"]</span>
+            <div class="nav-right">
+                @Html.ActionLink("Home", "Inicio", "BandTour", new { area = "" }, new { @class = "nav-link" })
                 <div class="divider"></div>
-                @Html.ActionLink("Cerrar Sesión", "Logout", "Home", new { area = "" }, new { @class = "nav-link" })
-            }
-            else
-            {
-                <a href="@Url.Action("AdminLogin", "Home")" class="login-btn">Log in</a>
-            }
+
+                @if (Session["Authenticate"] != null && (bool)Session["Authenticate"] == true && Session["Username"] != null)
+                {
+                    <span class="nav-link username">@Session["Username"]</span>
+                    <div class="divider"></div>
+                    @Html.ActionLink("Cerrar Sesión", "Logout", "BandTour", new { area = "" }, new { @class = "nav-link" })
+                }
+                else
+                {
+                    <a href="@Url.Action("AdminLogin", "BandTour")" class="login-btn">Log in</a>
+                }
+            </div>
         </div>
     </nav>
+
+
+
 
     <div class="container body-content">
         @RenderBody()

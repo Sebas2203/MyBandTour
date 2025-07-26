@@ -23,19 +23,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    height:77.5px;
 }
 
 .navbar-brand {
     color: white !important;
     text-decoration: none;
     font-size: 25px;
-}
-
-.nav-left {
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .logo {
@@ -51,6 +45,20 @@ body {
     color: white;
     width: 250px;
     outline: none;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-left {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .nav-right {
@@ -71,6 +79,84 @@ body {
     width: 1px;
     background-color: #444;
 }
+
+.AdminButtons {
+    display: flex;
+    gap: 10px;
+    align-items: center; 
+    padding: 20px;
+}
+
+button {
+    background-color: #1c1c1c;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px; 
+    padding: 7px 15px; 
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover {
+    background-color: #3a3a3a; /* medium gray */
+    border: 1px solid #ccc; /* keep the border */
+}
+
+.btn {
+    background-color: #1c1c1c;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 7px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+    .btn:hover {
+        background-color: #3a3a3a; /* medium gray */
+        border: 1px solid #ccc; /* keep the border */
+    }
+
+.AdminInputs {
+  display: flex;
+  flex-direction:column;
+  gap: 2rem; /* spacing between rows */
+  max-width: 600px; /* optional */
+}
+
+
+.AdminInputs label {
+  min-width: 120px; /* fixed label width for alignment */
+  font-weight: bold;
+}
+
+.AdminInputs input,
+.AdminInputs textarea {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.admin-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 2px;
+}
+
+#previewContainer {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 300px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+
 
 /*.login-btn {
     background-color: white;

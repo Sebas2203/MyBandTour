@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "AgregarConcierto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Agregar Concierto</h2>
+
+<br />
+<div class="AdminInputs">
+    <div class="admin-input-group">
+        <label>Nombre de la banda:</label>
+        <input type="text" id="txtBanda" placeholder="Ej: Shakira" />
+    </div>
+    <div class="admin-input-group">
+        <label>Género musical:</label>
+        <input type="text" id="txtGenero" placeholder="Ej: Rock" />
+    </div>
+    <div class="admin-input-group">
+        <label>Fecha y Hora:</label>
+        <input type="datetime-local" id="txtFechaHora" oninput="SelectorFechaHora()" />
+        <button id="btnConfirmarFecha" style="display:none" onclick="BotonConfirmarFecha()">Confirmar</button>
+    </div>
+    <div class="admin-input-group">
+        <label>Pais del concierto:</label>
+        <input type="text" id="txtPais" placeholder="Ej: México" />
+    </div>
+    <div class="admin-input-group">
+        <label>Dirección de la locación del concierto:</label>
+        <input type="text" id="txtDireccion" placeholder="Ej: Pepper's Club, Curridabat'" style="width: 600px" />
+    </div>
+    <div class="admin-input-group">
+        <label>Adjunte el poster del concierto</label>
+        <input type="file" id="imgFile" name="imageFile" accept="image/*" onchange="PreviewImage()" />
+    </div>
+
+    <div id="previewContainer" style="display: none; margin-top: 20px;">
+        <img id="preview" style="max-width: 100%; height: auto;">
+    </div>
+
+
+</div>
+<br /> 
+<button onclick="AgregarConcierto()">Agregar Concierto</button>
+
