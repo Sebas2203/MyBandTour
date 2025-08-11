@@ -1,6 +1,7 @@
 ﻿using MyBandTour.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.IO;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace MyBandTour.Controllers
             MyBandTourEntities conexion = new MyBandTourEntities();
             ObjectParameter Resultado = new ObjectParameter("Resultado", typeof(int));
 
-            conexion.sp_Autenticar (username, password, Resultado);
+            conexion.sp_Autenticar(username, password, Resultado);
 
             if ((int)Resultado.Value == 1)
             {
@@ -105,9 +106,91 @@ namespace MyBandTour.Controllers
             }
             else
             {
-                return Json(new { Status = 0 , message = "Error al agregar concierto"});
+                return Json(new { Status = 0, message = "Error al agregar concierto" });
             }
         }
+
+
+        //------- parte sebas --------
+
+        //listar los conciertos
+
+        [HttpGet]
+        public JsonResult ListarConciertos()
+        {
+            //conectar a base de datos
+            MyBandTourEntities db = new MyBandTourEntities();
+            var dataSetConcierto = db.sp_ListarConciertos().ToList();
+            return Json(new { Lista = dataSetConcierto }, JsonRequestBehavior.AllowGet);
+        }
+
+        //eliminar concierto
+        [HttpPost]
+        public JsonResult EliminarConcierto(int id_Concierto)
+        {
+            MyBandTourEntities db = new MyBandTourEntities();
+
+            var resultadoParam = new System.Data.SqlClient.SqlParameter
+            {
+                ParameterName = "@resultado",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            db.Database.ExecuteSqlCommand(
+                "EXEC sp_EliminarConcierto @id_Concierto, @resultado OUTPUT",
+                new System.Data.SqlClient.SqlParameter("@id_Concierto", id_Concierto),
+                resultadoParam);
+
+            int resultado = (int)resultadoParam.Value;
+
+            return Json(new { resultado });
+        }
+
+        //buscar Concierto
+        [HttpPost]
+        public JsonResult BuscarConcierto(int idConcierto, string nombreBanda)
+        {
+            MyBandTourEntities db = new MyBandTourEntities();
+            var concierto = db.sp_BuscarConciertos(idConcierto, nombreBanda);
+            if (concierto != null)
+            {
+                return Json(new { Status = 200, Concierto = concierto }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { Status = 404, message = "Concierto no encontrado" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        //crear cartas de conciertos
+        [HttpGet]
+        public JsonResult ListarConciertosParaCartas()
+        {
+            MyBandTourEntities db = new MyBandTourEntities();
+
+            var listaConciertos = db.sp_ListarConciertos()
+                .Select(c => new {
+                    c.id_Concierto,
+                    nombre_Banda = c.nombre_Banda,
+                    fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                    lugar = c.direccion,
+                    imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
+                }).ToList();
+
+            return Json(new { Lista = listaConciertos }, JsonRequestBehavior.AllowGet);
+        }
+
+        // Método que decide nombre de imagen basado en banda
+        private string ObtenerNombreImagen(string nombreBanda)
+        {
+            // convertir minúsculas, quita espacios, y extencion .jpg
+            var nombreArchivo = nombreBanda.ToLower().Replace(" ", "") + ".jpg";
+
+            // validar que el archivo existe o retornar que no existe
+            return nombreArchivo;
+        }
+
 
     }
 }
