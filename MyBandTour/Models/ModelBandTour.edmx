@@ -116,6 +116,7 @@
         <Function Name="sp_BuscarConciertos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="nombre_Banda" Type="varchar" Mode="In" />
           <Parameter Name="pais" Type="varchar" Mode="In" />
+          <Parameter Name="resultado" Type="int" Mode="InOut" />
         </Function>
         <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -274,6 +275,7 @@
           <FunctionImport Name="sp_BuscarConciertos" ReturnType="Collection(MyBandTourModel.sp_BuscarConciertos_Result)">
             <Parameter Name="nombre_Banda" Mode="In" Type="String" />
             <Parameter Name="pais" Mode="In" Type="String" />
+            <Parameter Name="resultado" Mode="InOut" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_EliminarConcierto">
             <Parameter Name="id_Concierto" Mode="In" Type="Int32" />
