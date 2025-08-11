@@ -63,7 +63,7 @@ namespace MyBandTour.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_AgregarConcierto", nombre_BandaParameter, nombre_GeneroParameter, fechaHora_ConciertoParameter, nombre_PaisParameter, direccionParameter, poster_URLParameter, resultado);
         }
     
-        public virtual ObjectResult<sp_BuscarConciertos_Result> sp_BuscarConciertos(string nombre_Banda, string pais)
+        public virtual ObjectResult<sp_BuscarConciertos_Result> sp_BuscarConciertos(string nombre_Banda, string pais, ObjectParameter resultado)
         {
             var nombre_BandaParameter = nombre_Banda != null ?
                 new ObjectParameter("nombre_Banda", nombre_Banda) :
@@ -73,7 +73,7 @@ namespace MyBandTour.Models
                 new ObjectParameter("pais", pais) :
                 new ObjectParameter("pais", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_BuscarConciertos_Result>("sp_BuscarConciertos", nombre_BandaParameter, paisParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_BuscarConciertos_Result>("sp_BuscarConciertos", nombre_BandaParameter, paisParameter, resultado);
         }
     
         public virtual int sp_EliminarConcierto(Nullable<int> id_Concierto, ObjectParameter resultado)
@@ -204,11 +204,6 @@ namespace MyBandTour.Models
         public virtual int sp_upgraddiagrams()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
-        }
-
-        internal object sp_BuscarConciertos(int idConcierto, string nombreBanda)
-        {
-            throw new NotImplementedException();
         }
     }
 }

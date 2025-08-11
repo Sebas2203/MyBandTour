@@ -210,29 +210,26 @@ function EliminarConcierto(id) {
 
 
 //buscar concierto
-function BuscarConcierto() {
-    // Parámetros de entrada
-    let nombre_Banda = document.getElementById("txtBuscarConcierto").value;
+function buscarConciertos() {
+    const nombre = $("#txtBuscarConcierto").val();
+    const pais = $("#txtBuscarConcierto").val();
 
     $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "/BandTour/BuscarConcierto",
-        data: {
-            'idConcierto': idConcierto,
-            'nombreBanda': nombre_Banda
-        },
+        url: '/BandTour/BuscarConciertos',
+        type: 'POST',
+        data: { nombre_Banda: nombre, pais: pais },
         success: function (response) {
-            console.log(response);
-
-            if (response.Status === 200) {
-                window.location.replace('/BandTour/Inicio')
+            if (response.success && response.resultado === 1) {
+                console.log("Conciertos encontrados:", response.conciertos);
+                // Render results to the page
+            } else if (response.resultado === -1) {
+                alert("No se encontraron conciertos.");
             } else {
-                document.getElementById('lblMessage').innerHTML = 'no existe este concierto'
+                alert("Ocurrió un error.");
             }
         },
-        error: function (error) {
-            console.log("Error: " + error);
+        error: function () {
+            alert("Error en la solicitud AJAX.");
         }
     });
 }

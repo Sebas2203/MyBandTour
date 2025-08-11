@@ -149,19 +149,41 @@ namespace MyBandTour.Controllers
 
         //buscar Concierto
         [HttpPost]
-        public JsonResult BuscarConcierto(int idConcierto, string nombreBanda)
+        public JsonResult BuscarConciertos(string nombre_Banda, string pais)
         {
-            MyBandTourEntities db = new MyBandTourEntities();
-            var concierto = db.sp_BuscarConciertos(idConcierto, nombreBanda);
-            if (concierto != null)
+            // Output parameter for the stored procedure
+            ObjectParameter resultado = new ObjectParameter("resultado", typeof(int));
+
+            try
             {
-                return Json(new { Status = 200, Concierto = concierto }, JsonRequestBehavior.AllowGet);
+                using (MyBandTourEntities conexion = new MyBandTourEntities())
+                {
+                    // Call the stored procedure directly via EF
+                    var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado).ToList();
+
+                    // Return results and status
+                    return Json(new
+                    {
+                        success = true,
+                        resultado = (int)resultado.Value,
+                        conciertos
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Status = 404, message = "Concierto no encontrado" }, JsonRequestBehavior.AllowGet);
+                // Handle errors gracefully
+                return Json(new
+                {
+                    success = false,
+                    resultado = 0,
+                    error = ex.Message
+                });
             }
         }
+
+
+
 
         //crear cartas de conciertos
         [HttpGet]
