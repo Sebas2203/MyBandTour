@@ -20,7 +20,7 @@
                 document.getElementById('lblMessage').innerHTML = 'Usuario o Contraseña incorrectos.'
             }
         },
-        error: function (error) { 
+        error: function (error) {
             console.log("Error: " + error);
         }
     });
@@ -40,7 +40,7 @@ function BotonConfirmarFecha() {
     const boton = document.getElementById("btnConfirmarFecha");
     boton.innerHTML = "✔️";
     boton.style.border = "none";
-    boton.style.backgroundColor = "transparent"; 
+    boton.style.backgroundColor = "transparent";
 }
 
 function PreviewImage() {
@@ -139,4 +139,149 @@ function AgregarConcierto() {
         }
     });
 }
+
+//------------------- Parte Sebas ------------------//
+
+//listar conciertos
+function ListarConciertos() {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/BandTour/ListarConciertos",
+        data: {},
+        success: function (respuesta) {
+            console.log(respuesta);
+
+            let cuerpoTabla = document.getElementById("listaConciertosTabla");
+            cuerpoTabla.innerHTML = ""; // limpiar tabla antes de llenar
+
+            for (let i = 0; i < respuesta.Lista.length; i++) {
+                let fila = cuerpoTabla.insertRow();
+
+                let idConcierto = fila.insertCell(0);
+                idConcierto.innerHTML = respuesta.Lista[i].id_Concierto;
+
+                let nombreConcierto = fila.insertCell(1);
+                nombreConcierto.innerHTML = respuesta.Lista[i].nombre_Banda;
+
+                let genero = fila.insertCell(2);
+                genero.innerHTML = respuesta.Lista[i].id_Genero;
+
+                let fechaC = fila.insertCell(3);
+                fechaC.innerHTML = respuesta.Lista[i].Fecha;
+
+                // Celda para el botón eliminar
+                let acciones = fila.insertCell(4);
+                acciones.innerHTML = `<button onclick="EliminarConcierto(${respuesta.Lista[i].id_Concierto})" class="btn btn-danger btn-sm">Eliminar</button>`;
+            }
+        },
+        error: function (error) {
+            console.error('Error', error);
+        }
+    });
+}
+
+//eliminar concierto 
+function EliminarConcierto(id) {
+    if (!confirm("¿Estás seguro que quieres eliminar este concierto?")) {
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/BandTour/EliminarConcierto",
+        data: { id_Concierto: id },
+        success: function (respuesta) {
+            if (respuesta.resultado === 1) {
+                alert("Concierto eliminado correctamente.");
+                ListarConciertos(); // refrescar tabla
+            } else {
+                alert("No se pudo eliminar el concierto.");
+            }
+        },
+        error: function (error) {
+            console.error("Error al eliminar", error);
+            alert("Error en la solicitud.");
+        }
+    });
+}
+
+
+
+
+//buscar concierto
+function BuscarConcierto() {
+    // Parámetros de entrada
+    let nombre_Banda = document.getElementById("txtBuscarConcierto").value;
+
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "/BandTour/BuscarConcierto",
+        data: {
+            'idConcierto': idConcierto,
+            'nombreBanda': nombre_Banda
+        },
+        success: function (response) {
+            console.log(response);
+
+            if (response.Status === 200) {
+                window.location.replace('/BandTour/Inicio')
+            } else {
+                document.getElementById('lblMessage').innerHTML = 'no existe este concierto'
+            }
+        },
+        error: function (error) {
+            console.log("Error: " + error);
+        }
+    });
+}
+
+//cargar las cartas de los conciertos
+function CargarCartasConciertos() {
+    $.ajax({
+        type: "GET",
+        url: "/BandTour/ListarConciertosParaCartas",
+        dataType: "json",
+        success: function (respuesta) {
+            let contenedor = document.querySelector(".grid-container");
+            contenedor.innerHTML = ""; // limpiar antes
+
+            respuesta.Lista.forEach(concierto => {
+                // Crear el div card
+                let card = document.createElement("div");
+                card.classList.add("card");
+
+                // Fecha
+                let divFecha = document.createElement("div");
+                divFecha.classList.add("date");
+                divFecha.innerHTML = concierto.fecha;
+                card.appendChild(divFecha);
+
+                // Imagen
+                let img = document.createElement("img");
+                img.src = "/Content/img/" + concierto.imagen;
+                img.alt = concierto.nombre_Banda;
+                card.appendChild(img);
+
+                // Nombre banda
+                let h3 = document.createElement("h3");
+                h3.textContent = concierto.nombre_Banda;
+                card.appendChild(h3);
+
+                // Lugar 
+                let p = document.createElement("p");
+                p.textContent = concierto.lugar;
+                card.appendChild(p);
+
+                contenedor.appendChild(card);
+            });
+        },
+        error: function (error) {
+            console.error("Error al cargar conciertos", error);
+        }
+    });
+}
+
+
 

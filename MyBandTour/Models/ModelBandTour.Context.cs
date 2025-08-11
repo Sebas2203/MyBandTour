@@ -205,5 +205,10 @@ namespace MyBandTour.Models
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+
+        internal object sp_BuscarConciertos(int idConcierto, string nombreBanda)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

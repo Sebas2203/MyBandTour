@@ -1,16 +1,14 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "HomePage";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section SearchNav {
     <div class="nav-left" style="color:white;">
         @Html.ActionLink("MyBandTour", "Inicio", "BandTour", new { area = "" }, new { @class = "navbar-brand" })
-        <input type="text" placeholder="Busca un concierto" class="search-box" />
-        <button>Buscar</button>
+        <input type="text" placeholder="Busca un concierto" class="search-box" id="txtBuscarConcierto" />
+        <button onclick="BuscarConcierto();">Buscar</button>
     </div>
 }
-
 
 <h2>Conciertos</h2>
 
@@ -19,7 +17,7 @@
 @if (Session["Authenticate"] != null && (bool)Session["Authenticate"] == true && Session["Username"] != null)
 {
     <div class="AdminButtons">
-        @Html.ActionLink("Agregar Concierto", "AgregarConcierto", "BandTour", new {area = ""}, new {@class = "btn"})
+        @Html.ActionLink("Agregar Concierto", "AgregarConcierto", "BandTour", new { area = "" }, new { @class = "btn" })
         @Html.ActionLink("Eliminar Concierto", "EliminarConcierto", "BandTour", new { area = "" }, new { @class = "btn" })
     </div>
 }
@@ -27,51 +25,13 @@
 <br />
 
 <div class="grid-container">
-    <!-- Repite esta tarjeta para cada concierto -->
-    <div class="card">
-        <div class="date">Dec<br>5</div>
-        <img src="~/Content/img/badbunny.jpg" alt="Bad Bunny" />
-        <h3>Bad Bunny</h3>
-        <p>Estadio Nacional de Costa Rica</p>
-    </div>
-
-    <div class="card">
-        <div class="date">Dec<br>5</div>
-        <img src="~/Content/img/Soultwo.png" alt="Soultwo" />
-        <h3>Soultwo</h3>
-        <p>Pedregal</p>
-    </div>
-
-    <div class="card">
-        <div class="date">Nov<br>7</div>
-        <img src="~/Content/img/bmth.jpg" alt="BMTH" />
-        <h3>Bring Me The Horizon</h3>
-        <p>Parque Viva</p>
-    </div>
-
-    <div class="card">
-        <div class="date">Nov<br>7</div>
-        <img src="~/Content/img/dreamTheater.jpg" alt="Dream Theater" />
-        <h3>Dream Theater</h3>
-        <p>Estadio Nacional de Costa Rica</p>
-    </div>
-
-    <div class="card">
-        <div class="date">Nov<br>7</div>
-        <img src="~/Content/img/opeth.jpg" alt="Opeth" />
-        <h3>Opeth</h3>
-        <p>Estadio Nacional de Costa Rica</p>
-    </div>
-
-    <div class="card">
-        <div class="date">Nov<br>7</div>
-        <img src="~/Content/img/NeObliviscaris.jpg" alt="Ne Obliviscaris" />
-        <h3>Ne Obliviscaris</h3>
-        <p>Estadio Nacional de Costa Rica</p>
-    </div>
-
-
-
-    <!-- Agrega más tarjetas aquí siguiendo la misma estructura -->
-
+    @* Aquí se insertarán las cartas dinámicamente *@
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            CargarCartasConciertos();
+        });
+    </script>
+}
