@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Core.Objects;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -205,12 +206,24 @@ namespace MyBandTour.Controllers
         private string ObtenerNombreImagen(string nombreBanda)
         {
             // convertir minúsculas, quita espacios, y extencion .jpg
-            var nombreArchivo = nombreBanda.ToLower().Replace(" ", "") + ".jpg";
+            //var nombreArchivo = nombreBanda.ToLower().Replace(" ", "") + ".jpg";
+            {
+                using (var conexion = new MyBandTourEntities())
+                {
+                    string imgname_query = @"
+                        SELECT b.poster_Url 
+                        FROM Conciertos c 
+                        INNER JOIN Bandas b ON c.id_Banda = b.id_Banda 
+                        WHERE b.nombre_Banda LIKE @p0";
 
-            // validar que el archivo existe o retornar que no existe
-            return nombreArchivo;
+                    var result = conexion.Database
+                        .SqlQuery<string>(imgname_query, nombreBanda)
+                        .FirstOrDefault();
+
+                    return result ?? "default.jpg"; // fallback si no hay resultados
+                }
+            }
         }
-
-
     }
+
 }
