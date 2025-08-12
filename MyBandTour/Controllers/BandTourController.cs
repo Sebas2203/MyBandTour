@@ -80,7 +80,6 @@ namespace MyBandTour.Controllers
         }
 
 
-        //Hay un fallo pasando el Json a la base de datos, no se que es lo que falla. El archivo de imagen si se sube bien
         public JsonResult AgregarConcierto_DB(string nombre_Banda, string nombre_Genero, string fechaHora_Concierto, string nombre_Pais, string direccion, string poster_URL)
         {
             MyBandTourEntities conexion = new MyBandTourEntities();
@@ -161,14 +160,12 @@ namespace MyBandTour.Controllers
         [HttpPost]
         public JsonResult BuscarConciertos(string nombre_Banda, string pais)
         {
-            // Output parameter for the stored procedure
             ObjectParameter resultado = new ObjectParameter("resultado", typeof(int));
 
             try
             {
                 using (MyBandTourEntities conexion = new MyBandTourEntities())
                 {
-                    // Call the stored procedure directly via EF
                     var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado)
                         .Select(c => new
                         {
@@ -180,7 +177,6 @@ namespace MyBandTour.Controllers
                             imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
                         }).ToList();
 
-                    // Return results and status
                     return Json(new
                     {
                         success = true,
@@ -191,7 +187,6 @@ namespace MyBandTour.Controllers
             }
             catch (Exception ex)
             {
-                // Handle errors gracefully
                 return Json(new
                 {
                     success = false,
@@ -224,8 +219,6 @@ namespace MyBandTour.Controllers
         // Método que decide nombre de imagen basado en banda
         private string ObtenerNombreImagen(string nombreBanda)
         {
-            // convertir minúsculas, quita espacios, y extencion .jpg
-            //var nombreArchivo = nombreBanda.ToLower().Replace(" ", "") + ".jpg";
             {
                 using (var conexion = new MyBandTourEntities())
                 {
