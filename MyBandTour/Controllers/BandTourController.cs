@@ -121,7 +121,15 @@ namespace MyBandTour.Controllers
         {
             //conectar a base de datos
             MyBandTourEntities db = new MyBandTourEntities();
-            var dataSetConcierto = db.sp_ListarConciertos().ToList();
+            var dataSetConcierto = db.sp_ListarConciertos()
+                .Select(c => new
+                {
+                    c.id_Concierto,
+                    nombre_Banda = c.nombre_Banda,
+                    fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                    lugar = c.direccion,
+                    pais = c.pais
+                }).ToList();
             return Json(new { Lista = dataSetConcierto }, JsonRequestBehavior.AllowGet);
         }
 
@@ -160,14 +168,23 @@ namespace MyBandTour.Controllers
                 using (MyBandTourEntities conexion = new MyBandTourEntities())
                 {
                     // Call the stored procedure directly via EF
-                    var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado).ToList();
+                    var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado)
+                        .Select(c => new
+                        {
+                            c.id_Concierto,
+                            nombre_Banda = c.nombre_Banda,
+                            fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                            lugar = c.direccion,
+                            pais = c.pais,
+                            imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
+                        }).ToList();
 
                     // Return results and status
                     return Json(new
                     {
                         success = true,
                         resultado = (int)resultado.Value,
-                        conciertos
+                        Lista = conciertos
                     });
                 }
             }
@@ -196,6 +213,7 @@ namespace MyBandTour.Controllers
                     nombre_Banda = c.nombre_Banda,
                     fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
                     lugar = c.direccion,
+                    pais = c.pais,
                     imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
                 }).ToList();
 
@@ -211,7 +229,7 @@ namespace MyBandTour.Controllers
                 using (var conexion = new MyBandTourEntities())
                 {
                     string imgname_query = @"
-                        SELECT b.poster_Url 
+                        SELECT poster_Url 
                         FROM Conciertos c 
                         INNER JOIN Bandas b ON c.id_Banda = b.id_Banda 
                         WHERE b.nombre_Banda LIKE @p0";
@@ -219,7 +237,7 @@ namespace MyBandTour.Controllers
                     var result = conexion.Database
                         .SqlQuery<string>(imgname_query, nombreBanda)
                         .FirstOrDefault();
-
+                    
                     return result ?? "default.jpg"; // fallback si no hay resultados
                 }
             }

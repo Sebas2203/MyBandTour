@@ -165,10 +165,11 @@ function ListarConciertos() {
                 nombreConcierto.innerHTML = respuesta.Lista[i].nombre_Banda;
 
                 let genero = fila.insertCell(2);
-                genero.innerHTML = respuesta.Lista[i].id_Genero;
+                genero.innerHTML = respuesta.Lista[i].fecha;
 
                 let fechaC = fila.insertCell(3);
-                fechaC.innerHTML = respuesta.Lista[i].Fecha;
+                fechaC.innerHTML = respuesta.Lista[i].lugar;
+
 
                 // Celda para el botón eliminar
                 let acciones = fila.insertCell(4);
@@ -249,29 +250,67 @@ function buscarConciertos() {
         type: 'POST',
         dataType: "json",
         data: { nombre_Banda: nombre, pais: pais },
-        success: function (response) {
+        success: function (respuesta) {
+            //let contenedor = document.querySelector(".grid-container");
+            //contenedor.innerHTML = ""; // limpiar antes
+
+            //if (respuesta.success && respuesta.resultado === 1 && respuesta.conciertos.length > 0) {
+            //    // Por si hay varios, solo mostramos el primero
+            //    let concierto = response.conciertos[0];
+
+            //    let card = document.createElement("div");
+            //    card.classList.add("card");
+
+            //    // Fecha
+            //    //let divFecha = document.createElement("div");
+            //    //divFecha.classList.add("date");
+            //    //let fecha = new Date(concierto.Fecha);
+            //    //let opcionesFecha = { month: 'short', day: '2-digit' };
+            //    //divFecha.innerHTML = fecha.toLocaleDateString("es-ES", opcionesFecha).replace(" ", "<br>");
+            //    //card.appendChild(divFecha);
+
+
+            //    // Imagen - asumimos que nombre_Banda viene y la imagen se basa en eso
+            //    let img = document.createElement("img");
+            //    img.src = "/Content/img/" + obtenerNombreImagen(concierto.nombre_Banda);
+            //    img.alt = concierto.nombre_Banda;
+            //    card.appendChild(img);
+
+            //    // Nombre banda
+            //    let h3 = document.createElement("h3");
+            //    h3.textContent = concierto.nombre_Banda;
+            //    card.appendChild(h3);
+
+            //    // Lugar
+            //    let p = document.createElement("p");
+            //    p.textContent = `${concierto.direccion}, ${concierto.pais}`;
+            //    card.appendChild(p);
+
+            //    contenedor.appendChild(card);
+
+            //} else if (response.resultado === -1 || (response.conciertos && response.conciertos.length === 0)) {
+            //    contenedor.innerHTML = "<p>No se encontraron conciertos para ese nombre.</p>";
+            //} else {
+            //    contenedor.innerHTML = "<p>Ocurrió un error al buscar el concierto.</p>";
+            //}
+
             let contenedor = document.querySelector(".grid-container");
             contenedor.innerHTML = ""; // limpiar antes
 
-            if (response.success && response.resultado === 1 && response.conciertos.length > 0) {
-                // Por si hay varios, solo mostramos el primero
-                let concierto = response.conciertos[0];
-
+            respuesta.Lista.forEach(concierto => {
+                // Crear el div card
                 let card = document.createElement("div");
                 card.classList.add("card");
 
                 // Fecha
-                //let divFecha = document.createElement("div");
-                //divFecha.classList.add("date");
-                //let fecha = new Date(concierto.Fecha);
-                //let opcionesFecha = { month: 'short', day: '2-digit' };
-                //divFecha.innerHTML = fecha.toLocaleDateString("es-ES", opcionesFecha).replace(" ", "<br>");
-                //card.appendChild(divFecha);
+                let divFecha = document.createElement("div");
+                divFecha.classList.add("date");
+                divFecha.innerHTML = concierto.fecha;
+                card.appendChild(divFecha);
 
-
-                // Imagen - asumimos que nombre_Banda viene y la imagen se basa en eso
+                // Imagen
                 let img = document.createElement("img");
-                img.src = "/Content/img/" + obtenerNombreImagen(concierto.nombre_Banda);
+                img.src = concierto.imagen;
                 img.alt = concierto.nombre_Banda;
                 card.appendChild(img);
 
@@ -282,16 +321,15 @@ function buscarConciertos() {
 
                 // Lugar 
                 let p = document.createElement("p");
-                p.textContent = concierto.direccion || concierto.lugar || "";
+                p.textContent = `${concierto.lugar}, ${concierto.pais}`;
                 card.appendChild(p);
 
-                contenedor.appendChild(card);
 
-            } else if (response.resultado === -1 || (response.conciertos && response.conciertos.length === 0)) {
-                contenedor.innerHTML = "<p>No se encontraron conciertos para ese nombre.</p>";
-            } else {
-                contenedor.innerHTML = "<p>Ocurrió un error al buscar el concierto.</p>";
-            }
+
+
+                contenedor.appendChild(card);
+            });
+
         },
         error: function () {
             alert("Error en la solicitud AJAX.");
@@ -329,7 +367,7 @@ function CargarCartasConciertos() {
 
                 // Imagen
                 let img = document.createElement("img");
-                img.src = "/Content/img/" + concierto.imagen;
+                img.src = concierto.imagen;
                 img.alt = concierto.nombre_Banda;
                 card.appendChild(img);
 
@@ -340,8 +378,11 @@ function CargarCartasConciertos() {
 
                 // Lugar 
                 let p = document.createElement("p");
-                p.textContent = concierto.lugar;
+                p.textContent = `${concierto.lugar}, ${concierto.pais}`;
                 card.appendChild(p);
+
+
+
 
                 contenedor.appendChild(card);
             });

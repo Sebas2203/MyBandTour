@@ -4,6 +4,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section SearchNav {
+    <div class="nav-left" style="color:white;">
+        @Html.ActionLink("MyBandTour", "Inicio", "BandTour", new { area = "" }, new { @class = "navbar-brand" })
+    </div>
+}
+
 <h2>Agregar Concierto</h2>
 
 <br />
@@ -40,6 +46,6 @@
 
 
 </div>
-<br /> 
+<br />
 <button onclick="AgregarConcierto()">Agregar Concierto</button>
 
