@@ -352,5 +352,9 @@ function CargarCartasConciertos() {
     });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    CargarCartasConciertos();
+});
+
 
 
