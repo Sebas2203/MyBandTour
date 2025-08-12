@@ -210,22 +210,87 @@ function EliminarConcierto(id) {
 
 
 //buscar concierto
+//function buscarConciertos() {
+//    const nombre = $("#txtBuscarConcierto").val();
+//    const pais = $("#txtBuscarConcierto").val();
+
+//    $.ajax({
+//        url: '/BandTour/BuscarConciertos',
+//        type: 'POST',
+//        data: { nombre_Banda: nombre, pais: pais },
+//        success: function (response) {
+//            if (response.success && response.resultado === 1) {
+//                console.log("Conciertos encontrados:", response.conciertos);
+//                // Render results to the page
+
+//            } else if (response.resultado === -1) {
+//                alert("No se encontraron conciertos.");
+//            } else {
+//                alert("Ocurrió un error.");
+//            }
+//        },
+//        error: function () {
+//            alert("Error en la solicitud AJAX.");
+//        }
+//    });
+//}
+
 function buscarConciertos() {
-    const nombre = $("#txtBuscarConcierto").val();
+    const nombre = $("#txtBuscarConcierto").val().trim();
     const pais = $("#txtBuscarConcierto").val();
+
+    if (nombre === "") {
+        alert("Por favor ingrese un nombre para buscar.");
+        return;
+    }
 
     $.ajax({
         url: '/BandTour/BuscarConciertos',
         type: 'POST',
+        dataType: "json",
         data: { nombre_Banda: nombre, pais: pais },
         success: function (response) {
-            if (response.success && response.resultado === 1) {
-                console.log("Conciertos encontrados:", response.conciertos);
-                // Render results to the page
-            } else if (response.resultado === -1) {
-                alert("No se encontraron conciertos.");
+            let contenedor = document.querySelector(".grid-container");
+            contenedor.innerHTML = ""; // limpiar antes
+
+            if (response.success && response.resultado === 1 && response.conciertos.length > 0) {
+                // Por si hay varios, solo mostramos el primero
+                let concierto = response.conciertos[0];
+
+                let card = document.createElement("div");
+                card.classList.add("card");
+
+                // Fecha
+                //let divFecha = document.createElement("div");
+                //divFecha.classList.add("date");
+                //let fecha = new Date(concierto.Fecha);
+                //let opcionesFecha = { month: 'short', day: '2-digit' };
+                //divFecha.innerHTML = fecha.toLocaleDateString("es-ES", opcionesFecha).replace(" ", "<br>");
+                //card.appendChild(divFecha);
+
+
+                // Imagen - asumimos que nombre_Banda viene y la imagen se basa en eso
+                let img = document.createElement("img");
+                img.src = "/Content/img/" + obtenerNombreImagen(concierto.nombre_Banda);
+                img.alt = concierto.nombre_Banda;
+                card.appendChild(img);
+
+                // Nombre banda
+                let h3 = document.createElement("h3");
+                h3.textContent = concierto.nombre_Banda;
+                card.appendChild(h3);
+
+                // Lugar 
+                let p = document.createElement("p");
+                p.textContent = concierto.direccion || concierto.lugar || "";
+                card.appendChild(p);
+
+                contenedor.appendChild(card);
+
+            } else if (response.resultado === -1 || (response.conciertos && response.conciertos.length === 0)) {
+                contenedor.innerHTML = "<p>No se encontraron conciertos para ese nombre.</p>";
             } else {
-                alert("Ocurrió un error.");
+                contenedor.innerHTML = "<p>Ocurrió un error al buscar el concierto.</p>";
             }
         },
         error: function () {
@@ -233,6 +298,13 @@ function buscarConciertos() {
         }
     });
 }
+
+// función helper para obtener nombre imagen igual que en controlador
+function obtenerNombreImagen(nombreBanda) {
+    return nombreBanda.toLowerCase().replace(/ /g, '') + ".jpg";
+}
+
+
 
 //cargar las cartas de los conciertos
 function CargarCartasConciertos() {

@@ -182,9 +182,6 @@ namespace MyBandTour.Controllers
             }
         }
 
-
-
-
         //crear cartas de conciertos
         [HttpGet]
         public JsonResult ListarConciertosParaCartas()
@@ -192,7 +189,8 @@ namespace MyBandTour.Controllers
             MyBandTourEntities db = new MyBandTourEntities();
 
             var listaConciertos = db.sp_ListarConciertos()
-                .Select(c => new {
+                .Select(c => new
+                {
                     c.id_Concierto,
                     nombre_Banda = c.nombre_Banda,
                     fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
