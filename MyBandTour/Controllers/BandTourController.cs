@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -126,7 +127,7 @@ namespace MyBandTour.Controllers
                 {
                     c.id_Concierto,
                     nombre_Banda = c.nombre_Banda,
-                    fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                    fecha = ((DateTime)c.Fecha).ToString("dd'-'MMM'-'yyyy", new CultureInfo("es-ES")).Replace(".", "").ToUpperInvariant(),
                     lugar = c.direccion,
                     pais = c.pais
                 }).ToList();
@@ -173,7 +174,7 @@ namespace MyBandTour.Controllers
                         {
                             c.id_Concierto,
                             nombre_Banda = c.nombre_Banda,
-                            fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                            fecha = ((DateTime)c.Fecha).ToString("dd'<br>'MMM'<br>'yyyy", new CultureInfo("es-ES")).Replace(".", "").ToUpperInvariant(),
                             lugar = c.direccion,
                             pais = c.pais,
                             imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
@@ -211,7 +212,7 @@ namespace MyBandTour.Controllers
                 {
                     c.id_Concierto,
                     nombre_Banda = c.nombre_Banda,
-                    fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                    fecha = ((DateTime)c.Fecha).ToString("dd'<br>'MMM'<br>'yyyy", new CultureInfo("es-ES")).Replace(".","").ToUpperInvariant(),
                     lugar = c.direccion,
                     pais = c.pais,
                     imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen

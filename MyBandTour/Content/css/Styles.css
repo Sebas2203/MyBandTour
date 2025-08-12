@@ -239,7 +239,8 @@ header {
     border-radius: 5px;
     font-size: 14px;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.4;
+    white-space: pre-line;
 }
 
 .card h3 {
