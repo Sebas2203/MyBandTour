@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Core.Objects;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -78,7 +80,6 @@ namespace MyBandTour.Controllers
         }
 
 
-        //Hay un fallo pasando el Json a la base de datos, no se que es lo que falla. El archivo de imagen si se sube bien
         public JsonResult AgregarConcierto_DB(string nombre_Banda, string nombre_Genero, string fechaHora_Concierto, string nombre_Pais, string direccion, string poster_URL)
         {
             MyBandTourEntities conexion = new MyBandTourEntities();
@@ -120,7 +121,15 @@ namespace MyBandTour.Controllers
         {
             //conectar a base de datos
             MyBandTourEntities db = new MyBandTourEntities();
-            var dataSetConcierto = db.sp_ListarConciertos().ToList();
+            var dataSetConcierto = db.sp_ListarConciertos()
+                .Select(c => new
+                {
+                    c.id_Concierto,
+                    nombre_Banda = c.nombre_Banda,
+                    fecha = ((DateTime)c.Fecha).ToString("dd'-'MMM'-'yyyy", new CultureInfo("es-ES")).Replace(".", "").ToUpperInvariant(),
+                    lugar = c.direccion,
+                    pais = c.pais
+                }).ToList();
             return Json(new { Lista = dataSetConcierto }, JsonRequestBehavior.AllowGet);
         }
 
@@ -151,28 +160,33 @@ namespace MyBandTour.Controllers
         [HttpPost]
         public JsonResult BuscarConciertos(string nombre_Banda, string pais)
         {
-            // Output parameter for the stored procedure
             ObjectParameter resultado = new ObjectParameter("resultado", typeof(int));
 
             try
             {
                 using (MyBandTourEntities conexion = new MyBandTourEntities())
                 {
-                    // Call the stored procedure directly via EF
-                    var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado).ToList();
+                    var conciertos = conexion.sp_BuscarConciertos(nombre_Banda, pais, resultado)
+                        .Select(c => new
+                        {
+                            c.id_Concierto,
+                            nombre_Banda = c.nombre_Banda,
+                            fecha = ((DateTime)c.Fecha).ToString("dd'<br>'MMM'<br>'yyyy", new CultureInfo("es-ES")).Replace(".", "").ToUpperInvariant(),
+                            lugar = c.direccion,
+                            pais = c.pais,
+                            imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
+                        }).ToList();
 
-                    // Return results and status
                     return Json(new
                     {
                         success = true,
                         resultado = (int)resultado.Value,
-                        conciertos
+                        Lista = conciertos
                     });
                 }
             }
             catch (Exception ex)
             {
-                // Handle errors gracefully
                 return Json(new
                 {
                     success = false,
@@ -193,8 +207,9 @@ namespace MyBandTour.Controllers
                 {
                     c.id_Concierto,
                     nombre_Banda = c.nombre_Banda,
-                    fecha = ((DateTime)c.Fecha).ToString("MMM<br>dd"),
+                    fecha = ((DateTime)c.Fecha).ToString("dd'<br>'MMM'<br>'yyyy", new CultureInfo("es-ES")).Replace(".","").ToUpperInvariant(),
                     lugar = c.direccion,
+                    pais = c.pais,
                     imagen = ObtenerNombreImagen(c.nombre_Banda) // método para obtener nombre imagen
                 }).ToList();
 
@@ -204,13 +219,23 @@ namespace MyBandTour.Controllers
         // Método que decide nombre de imagen basado en banda
         private string ObtenerNombreImagen(string nombreBanda)
         {
-            // convertir minúsculas, quita espacios, y extencion .jpg
-            var nombreArchivo = nombreBanda.ToLower().Replace(" ", "") + ".jpg";
+            {
+                using (var conexion = new MyBandTourEntities())
+                {
+                    string imgname_query = @"
+                        SELECT poster_Url 
+                        FROM Conciertos c 
+                        INNER JOIN Bandas b ON c.id_Banda = b.id_Banda 
+                        WHERE b.nombre_Banda LIKE @p0";
 
-            // validar que el archivo existe o retornar que no existe
-            return nombreArchivo;
+                    var result = conexion.Database
+                        .SqlQuery<string>(imgname_query, nombreBanda)
+                        .FirstOrDefault();
+                    
+                    return result ?? "default.jpg"; // fallback si no hay resultados
+                }
+            }
         }
-
-
     }
+
 }

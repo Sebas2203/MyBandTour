@@ -4,6 +4,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section SearchNav {
+    <div class="nav-left" style="color:white;">
+        @Html.ActionLink("MyBandTour", "Inicio", "BandTour", new { area = "" }, new { @class = "navbar-brand" })
+    </div>
+}
+
 <h2>Eliminar Concierto</h2>
 
 <button onclick="ListarConciertos();">Mostrar Conciertos</button>
@@ -14,10 +20,10 @@
 <table class="table table-dark">
     <thead>
         <tr>
-            <th scope="col">ID Banda</th>
-            <th scope="col">Concierto</th>
-            <th scope="col">Genero</th>
+            <th scope="col">ID Concierto</th>
+            <th scope="col">Banda</th>
             <th scope="col">Fecha</th>
+            <th scope="col">Lugar</th>
             <th scope="col">Acciones</th> <!-- nueva columna -->
         </tr>
     </thead>

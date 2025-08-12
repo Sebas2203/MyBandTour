@@ -54,12 +54,12 @@ function PreviewImage() {
         const reader = new FileReader();
         reader.onload = function (e) {
             preview.src = e.target.result;
-            previewContainer.style.display = "block"; // Show container
+            previewContainer.style.display = "block"; 
         };
         reader.readAsDataURL(uploadedImage);
     } else {
         preview.src = "";
-        previewContainer.style.display = "none"; // Hide container
+        previewContainer.style.display = "none"; 
         alert("Archivo no válido. Por favor seleccione un archivo con formato de imagen.");
         input.value = "";
         uploadedImage = null;
@@ -165,10 +165,11 @@ function ListarConciertos() {
                 nombreConcierto.innerHTML = respuesta.Lista[i].nombre_Banda;
 
                 let genero = fila.insertCell(2);
-                genero.innerHTML = respuesta.Lista[i].id_Genero;
+                genero.innerHTML = respuesta.Lista[i].fecha;
 
                 let fechaC = fila.insertCell(3);
-                fechaC.innerHTML = respuesta.Lista[i].Fecha;
+                fechaC.innerHTML = respuesta.Lista[i].lugar;
+
 
                 // Celda para el botón eliminar
                 let acciones = fila.insertCell(4);
@@ -209,32 +210,6 @@ function EliminarConcierto(id) {
 
 
 
-//buscar concierto
-//function buscarConciertos() {
-//    const nombre = $("#txtBuscarConcierto").val();
-//    const pais = $("#txtBuscarConcierto").val();
-
-//    $.ajax({
-//        url: '/BandTour/BuscarConciertos',
-//        type: 'POST',
-//        data: { nombre_Banda: nombre, pais: pais },
-//        success: function (response) {
-//            if (response.success && response.resultado === 1) {
-//                console.log("Conciertos encontrados:", response.conciertos);
-//                // Render results to the page
-
-//            } else if (response.resultado === -1) {
-//                alert("No se encontraron conciertos.");
-//            } else {
-//                alert("Ocurrió un error.");
-//            }
-//        },
-//        error: function () {
-//            alert("Error en la solicitud AJAX.");
-//        }
-//    });
-//}
-
 function buscarConciertos() {
     const nombre = $("#txtBuscarConcierto").val().trim();
     const pais = $("#txtBuscarConcierto").val();
@@ -249,29 +224,25 @@ function buscarConciertos() {
         type: 'POST',
         dataType: "json",
         data: { nombre_Banda: nombre, pais: pais },
-        success: function (response) {
+        success: function (respuesta) {
+
             let contenedor = document.querySelector(".grid-container");
             contenedor.innerHTML = ""; // limpiar antes
 
-            if (response.success && response.resultado === 1 && response.conciertos.length > 0) {
-                // Por si hay varios, solo mostramos el primero
-                let concierto = response.conciertos[0];
-
+            respuesta.Lista.forEach(concierto => {
+                // Crear el div card
                 let card = document.createElement("div");
                 card.classList.add("card");
 
                 // Fecha
-                //let divFecha = document.createElement("div");
-                //divFecha.classList.add("date");
-                //let fecha = new Date(concierto.Fecha);
-                //let opcionesFecha = { month: 'short', day: '2-digit' };
-                //divFecha.innerHTML = fecha.toLocaleDateString("es-ES", opcionesFecha).replace(" ", "<br>");
-                //card.appendChild(divFecha);
+                let divFecha = document.createElement("div");
+                divFecha.classList.add("date");
+                divFecha.innerHTML = concierto.fecha;
+                card.appendChild(divFecha);
 
-
-                // Imagen - asumimos que nombre_Banda viene y la imagen se basa en eso
+                // Imagen
                 let img = document.createElement("img");
-                img.src = "/Content/img/" + obtenerNombreImagen(concierto.nombre_Banda);
+                img.src = concierto.imagen;
                 img.alt = concierto.nombre_Banda;
                 card.appendChild(img);
 
@@ -282,16 +253,15 @@ function buscarConciertos() {
 
                 // Lugar 
                 let p = document.createElement("p");
-                p.textContent = concierto.direccion || concierto.lugar || "";
+                p.textContent = `${concierto.lugar}, ${concierto.pais}`;
                 card.appendChild(p);
 
-                contenedor.appendChild(card);
 
-            } else if (response.resultado === -1 || (response.conciertos && response.conciertos.length === 0)) {
-                contenedor.innerHTML = "<p>No se encontraron conciertos para ese nombre.</p>";
-            } else {
-                contenedor.innerHTML = "<p>Ocurrió un error al buscar el concierto.</p>";
-            }
+
+
+                contenedor.appendChild(card);
+            });
+
         },
         error: function () {
             alert("Error en la solicitud AJAX.");
@@ -329,7 +299,7 @@ function CargarCartasConciertos() {
 
                 // Imagen
                 let img = document.createElement("img");
-                img.src = "/Content/img/" + concierto.imagen;
+                img.src = concierto.imagen;
                 img.alt = concierto.nombre_Banda;
                 card.appendChild(img);
 
@@ -340,8 +310,11 @@ function CargarCartasConciertos() {
 
                 // Lugar 
                 let p = document.createElement("p");
-                p.textContent = concierto.lugar;
+                p.textContent = `${concierto.lugar}, ${concierto.pais}`;
                 card.appendChild(p);
+
+
+
 
                 contenedor.appendChild(card);
             });
@@ -351,6 +324,10 @@ function CargarCartasConciertos() {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    CargarCartasConciertos();
+});
 
 
 
